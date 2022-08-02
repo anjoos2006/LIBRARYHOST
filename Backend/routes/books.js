@@ -77,4 +77,8 @@ router.put('/api/update', async (req, res) => {
         res.json({ message: err });
      }   
 }); 
+
+router.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname + './dist/frontend/index.html'));
+   });
 module.exports = router;

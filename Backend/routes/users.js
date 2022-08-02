@@ -66,6 +66,9 @@ router.post("/api/login", async (req,res) => {
         }
         
     }
-  )})
+  )});
+  router.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname + './dist/frontend/index.html'));
+   });
   
   module.exports = router;

@@ -27,6 +27,8 @@ const usersRoute = require('./routes/users');
 app.use('/books',booksRoute);
 app.use('/users',usersRoute);
 
+const PORT = process.env.PORT || 8080;
+
 
 // Connect to DB
 mongoose.connect(process.env.dbUrl, { useNewUrlParser: true }, () => { 
@@ -38,4 +40,4 @@ app.get('/*', function(req, res) {
    });
    
 
-app.listen(3000)
+app.listen(PORT)

@@ -2,20 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv/config');
 const  cors = require('cors');
-const jwt = require('jsonwebtoken');
 const path = require('path');
 
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-
 // Middleware
 app.use(express.urlencoded({extended: true})); 
 app.use(express.json());
-app.use(express.static('./dist/frontend'));
 
 app.use(cors());
+
+app.use(express.static('./dist/frontend'));
+
+
 
 // Import Routes
 const booksRoute = require('./routes/books');
@@ -27,14 +27,15 @@ const usersRoute = require('./routes/users');
 app.use('/books',booksRoute);
 app.use('/users',usersRoute);
 
-app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname + '/dist/frontend/index.html'));
-   });
-   
 
 // Connect to DB
 mongoose.connect(process.env.dbUrl, { useNewUrlParser: true }, () => { 
     console.log("Connected to DB")
 });
 
-app.listen(PORT);
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname + './dist/frontend/index.html'))
+   });
+   
+
+app.listen(3000)

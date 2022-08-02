@@ -2,7 +2,6 @@ const express = require ('express');
 const router = express.Router();
 const User = require('../models/user');
 const app = express();
-const jwt = require('jsonwebtoken');
 
 app.use(express.urlencoded({extended: true})); 
 app.use(express.json());
@@ -30,45 +29,30 @@ router.post('/api/signup', async (req, res) => {
      }   
 });
 
-router.post("/api/login", async (req,res) => {
-    var flag=false;
-    
-        const pwd = req.body.User.password;
-        
-        const uname = req.body.User.username;
-
-        // let getUser;
-        
-    
-        await User.findOne({"username":uname}).then(function(getUser){
-        // res.json(getUser);
-        console.log("getUser"+getUser);
-        if (getUser == null) {
-            console.log("In null")
-            res.json({"error": "This email address is not recognised, please check you have entered your email correctly"});
-          } 
-        else{
-            console.log("In not null")
-          if (pwd == getUser.password){
-            console.log("Valid login")
-            
-            flag = true
-            console.log(getUser);
-            let payload={subject:getUser.username+getUser.password}
-            let token = jwt.sign(payload,'secretKey')
-            console.log("token is",token)
-            res.status(200).send(token) 
+    router.get("/api/login", (req,res) => {
+       
+    console.log("check")
+    console.log(req.params);
+    var flag=false; 
+        User.findOne({"username":req.params.username},function(err,result){
+        if (err) {
+            console.log(err);
+            res.send({error: "An error has occurred"});
+          } else {
+            if (result == null) {
+              res.send({"error": "This email address is not recognised, please check you have entered your email correctly"});
             } 
-          else{
-            res.json({"error":"Sorry your password is incorrect"});
-            console.log("Incorrect password");
+            else {
+              console.log("Email recognised");
+                        
+              if (req.body.password !== result.password){
+                res.send({"error":"Sorry your password is incorrect"});
+              } else {
+                res.send("Login successful")
+              };
+            }
           }
-        }
-        
-    }
-  )});
-  router.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname + './dist/frontend/index.html'));
-   });
-  
-  module.exports = router;
+        })
+    });
+
+module.exports = router;
